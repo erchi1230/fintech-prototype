@@ -266,4 +266,83 @@
   --tooltip-bg:          var(--gray-900);
   --tooltip-text:        var(--text-inverse);
   --tooltip-radius:      var(--radius-md);
+  --tooltip-shadow:      var(--shadow-md);
+
+  /* -----------------------------------------------------------------------
+     PROGRESS BAR
+     ----------------------------------------------------------------------- */
+  --progress-track:      var(--gray-100);
+  --progress-fill:       var(--interactive);
+  --progress-radius:     var(--radius-pill);
+  --progress-height-sm:  4px;
+  --progress-height-md:  6px;
+  --progress-height-lg:  8px;
+  --progress-success:    var(--support-success);
+  --progress-warning:    var(--support-warning);
+  --progress-error:      var(--support-error);
+  --progress-info:       var(--support-info);
+  --progress-brand:      var(--interactive);
+
+  /* -----------------------------------------------------------------------
+     BAR LIST
+     ----------------------------------------------------------------------- */
+  --bar-list-bg:         var(--green-50);
+  --bar-list-text:       var(--text-primary);
+  --bar-list-value:      var(--text-secondary);
+  --bar-list-hover:      var(--bg-hover);
+
+  /* -----------------------------------------------------------------------
+     TRACKER
+     ----------------------------------------------------------------------- */
+  --tracker-success:     var(--teal-400);
+  --tracker-warning:     var(--amber-400);
+  --tracker-error:       var(--red-400);
+  --tracker-neutral:     var(--gray-200);
+  --tracker-radius:      var(--radius-sm);
+
+  /* -----------------------------------------------------------------------
+     CATEGORY BAR
+     ----------------------------------------------------------------------- */
+  --category-bar-height: 8px;
+  --category-bar-radius: var(--radius-pill);
+  --category-bar-gap:    2px;
+
+  /* -----------------------------------------------------------------------
+     STAT / TREND
+     ----------------------------------------------------------------------- */
+  --stat-positive:       var(--support-success);
+  --stat-positive-bg:    var(--teal-50);
+  --stat-negative:       var(--support-error);
+  --stat-negative-bg:    var(--red-50);
+  --stat-unchanged:      var(--text-tertiary);
+  --stat-unchanged-bg:   var(--gray-100);
+
+  /* -----------------------------------------------------------------------
+     AVATAR
+     ----------------------------------------------------------------------- */
+  --avatar-bg:           var(--green-100);
+  --avatar-text:         var(--green-600);
+  --avatar-border:       var(--bg-layer-01);
+  --avatar-size-sm:      1.5rem;
+  --avatar-size-md:      2rem;
+  --avatar-size-lg:      2.5rem;
+  --avatar-size-xl:      3rem;
+
+  /* -----------------------------------------------------------------------
+     DROPDOWN
+     ----------------------------------------------------------------------- */
+  --dropdown-bg:         var(--bg-layer-01);
+  --dropdown-border:     var(--border-subtle);
+  --dropdown-shadow:     var(--shadow-md);
+  --dropdown-radius:     var(--radius-lg);
+  --dropdown-item-hover: var(--bg-hover);
+  --dropdown-item-active: var(--bg-active);
+  --dropdown-separator:  var(--border-subtle);
+
+  /* -----------------------------------------------------------------------
+     DESCRIPTION LIST
+     ----------------------------------------------------------------------- */
+  --list-border:         var(--border-subtle);
+  --list-label:          var(--text-secondary);
+  --list-value:          var(--text-primary);
 }

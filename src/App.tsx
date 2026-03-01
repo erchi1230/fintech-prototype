@@ -3,15 +3,21 @@ import {
   LayoutDashboard,
   Briefcase,
   ArrowLeftRight,
+  Palette,
 } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import Portfolio from "@/pages/Portfolio";
 import Transactions from "@/pages/Transactions";
+import ComponentLibrary from "@/pages/ComponentLibrary";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+];
+
+const designItems = [
+  { to: "/components", label: "Component Library", icon: Palette },
 ];
 
 export default function App() {
@@ -32,6 +38,20 @@ export default function App() {
               key={to}
               to={to}
               end={to === "/"}
+              className={({ isActive }) =>
+                `mb-sidebar__item ${isActive ? "mb-sidebar__item--active" : ""}`
+              }
+            >
+              <Icon size={16} />
+              {label}
+          </NavLink>
+          ))}
+
+          <div className="mb-sidebar__label">Design</div>
+          {designItems.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
               className={({ isActive }) =>
                 `mb-sidebar__item ${isActive ? "mb-sidebar__item--active" : ""}`
               }
@@ -59,6 +79,7 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/components" element={<ComponentLibrary />} />
           </Routes>
         </div>
       </div>

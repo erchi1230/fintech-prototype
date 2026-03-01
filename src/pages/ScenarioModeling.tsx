@@ -71,9 +71,9 @@ function ScenarioCard({
       {/* Net IRR — mb-card__value (text-3xl, semibold, tabular-nums) */}
       <span className="mb-card__value">{scenario.irr}</span>
 
-      {/* Base Case — neutral baseline badge */}
+      {/* Base Case — baseline indicator, same delta treatment as other cards */}
       {isBase && (
-        <span className="mb-badge mb-badge--neutral" style={{ marginTop: "var(--spacing-03)" }}>
+        <span className="mb-card__delta mb-card__delta--unchanged">
           Performance baseline
         </span>
       )}

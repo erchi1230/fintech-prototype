@@ -20,6 +20,7 @@ import {
    TAB NAVIGATION
    ======================================================================== */
 const tabs = [
+  "Primitives",
   "Data Display",
   "Tables",
   "Forms & Controls",
@@ -64,6 +65,543 @@ function Section({
       {!description && <div style={{ marginBottom: "var(--spacing-05)" }} />}
       {children}
     </section>
+  );
+}
+
+/* ========================================================================
+   PRIMITIVES TAB
+   Color scales, spacing, typography, radii, shadows, transitions
+   ======================================================================== */
+
+const COLOR_SCALES: { name: string; prefix: string; steps: number[] }[] = [
+  { name: "Green (Primary)", prefix: "green", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+  { name: "Gray (Neutral)", prefix: "gray", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+  { name: "Red (Danger)", prefix: "red", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+  { name: "Amber (Warning)", prefix: "amber", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+  { name: "Blue (Info)", prefix: "blue", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+  { name: "Teal (Success)", prefix: "teal", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] },
+];
+
+const SURFACE_COLORS = [
+  { token: "--surface-green-tint", label: "green-tint" },
+  { token: "--surface-green-light", label: "green-light" },
+  { token: "--surface-green-subtle", label: "green-subtle" },
+  { token: "--surface-mint", label: "mint" },
+];
+
+const SPACING_STEPS = [
+  { token: "--spacing-01", label: "01", px: "2px" },
+  { token: "--spacing-02", label: "02", px: "4px" },
+  { token: "--spacing-03", label: "03", px: "8px" },
+  { token: "--spacing-04", label: "04", px: "12px" },
+  { token: "--spacing-05", label: "05", px: "16px" },
+  { token: "--spacing-06", label: "06", px: "20px" },
+  { token: "--spacing-07", label: "07", px: "24px" },
+  { token: "--spacing-08", label: "08", px: "32px" },
+  { token: "--spacing-09", label: "09", px: "40px" },
+  { token: "--spacing-10", label: "10", px: "48px" },
+  { token: "--spacing-11", label: "11", px: "64px" },
+  { token: "--spacing-12", label: "12", px: "80px" },
+  { token: "--spacing-13", label: "13", px: "160px" },
+];
+
+const FONT_SIZES = [
+  { token: "--text-xs", label: "xs", px: "12px" },
+  { token: "--text-sm", label: "sm", px: "14px" },
+  { token: "--text-base", label: "base", px: "16px" },
+  { token: "--text-md", label: "md", px: "18px" },
+  { token: "--text-lg", label: "lg", px: "20px" },
+  { token: "--text-xl", label: "xl", px: "24px" },
+  { token: "--text-2xl", label: "2xl", px: "28px" },
+  { token: "--text-3xl", label: "3xl", px: "32px" },
+  { token: "--text-4xl", label: "4xl", px: "40px" },
+  { token: "--text-5xl", label: "5xl", px: "48px" },
+  { token: "--text-6xl", label: "6xl", px: "56px" },
+  { token: "--text-7xl", label: "7xl", px: "68px" },
+];
+
+const RADII = [
+  { token: "--radius-none", label: "none" },
+  { token: "--radius-sm", label: "sm (4px)" },
+  { token: "--radius-md", label: "md (6px)" },
+  { token: "--radius-lg", label: "lg (8px)" },
+  { token: "--radius-xl", label: "xl (12px)" },
+  { token: "--radius-2xl", label: "2xl (16px)" },
+  { token: "--radius-pill", label: "pill" },
+  { token: "--radius-full", label: "full" },
+];
+
+const SHADOWS = [
+  { token: "--shadow-xs", label: "xs" },
+  { token: "--shadow-sm", label: "sm" },
+  { token: "--shadow-md", label: "md" },
+  { token: "--shadow-lg", label: "lg" },
+  { token: "--shadow-xl", label: "xl" },
+  { token: "--shadow-focus", label: "focus" },
+];
+
+function PrimitivesTab() {
+  return (
+    <>
+      {/* ── Color Scales ──────────────────────────────── */}
+      <Section
+        title="Color Scales"
+        description="10-step scales from light (50) to dark (900). Referenced via semantic tokens, never used directly."
+      >
+        <div className="flex flex-col gap-[var(--spacing-06)]">
+          {COLOR_SCALES.map((scale) => (
+            <div key={scale.prefix}>
+              <span
+                style={{
+                  fontSize: "var(--text-xs)",
+                  fontWeight: "var(--weight-medium)",
+                  color: "var(--text-secondary)",
+                  marginBottom: "var(--spacing-02)",
+                  display: "block",
+                }}
+              >
+                {scale.name}
+              </span>
+              <div className="flex gap-[var(--spacing-01)]">
+                {scale.steps.map((step) => {
+                  const token = `--${scale.prefix}-${step}`;
+                  return (
+                    <div
+                      key={step}
+                      className="flex flex-col items-center gap-[var(--spacing-01)]"
+                      style={{ flex: 1 }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor: `var(${token})`,
+                          width: "100%",
+                          height: "2.5rem",
+                          borderRadius: "var(--radius-sm)",
+                          border: step <= 100 ? "1px solid var(--border-subtle)" : undefined,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          color: "var(--text-tertiary)",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        {step}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Surface Colors ─────────────────────────────── */}
+      <Section
+        title="Surface Colors"
+        description="Brand-tinted backgrounds for cards and panels."
+      >
+        <div className="flex gap-[var(--spacing-03)]">
+          {SURFACE_COLORS.map((s) => (
+            <div
+              key={s.token}
+              className="flex flex-col items-center gap-[var(--spacing-02)]"
+              style={{ flex: 1 }}
+            >
+              <div
+                style={{
+                  backgroundColor: `var(${s.token})`,
+                  width: "100%",
+                  height: "3rem",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid var(--border-subtle)",
+                }}
+              />
+              <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Spacing ────────────────────────────────────── */}
+      <Section
+        title="Spacing Scale"
+        description="8px base-unit system. Carbon-inspired numbered steps."
+      >
+        <div className="flex flex-col gap-[var(--spacing-03)]">
+          {SPACING_STEPS.map((s) => (
+            <div
+              key={s.token}
+              className="flex items-center gap-[var(--spacing-04)]"
+            >
+              <span
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--text-tertiary)",
+                  width: "4.5rem",
+                  flexShrink: 0,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {s.label}{" "}
+                <span style={{ color: "var(--text-placeholder)" }}>{s.px}</span>
+              </span>
+              <div
+                style={{
+                  width: `var(${s.token})`,
+                  height: "var(--spacing-04)",
+                  backgroundColor: "var(--interactive)",
+                  borderRadius: "var(--radius-sm)",
+                  minWidth: 2,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Typography — Font Families ─────────────────── */}
+      <Section
+        title="Font Families"
+        description="Serif for display/headings, sans for UI, mono for data."
+      >
+        <div className="flex flex-col gap-[var(--spacing-05)]">
+          {[
+            { token: "--font-serif", label: "Serif", sample: "Cormorant Garamond — The quick brown fox jumps over the lazy dog" },
+            { token: "--font-sans", label: "Sans", sample: "Inter — The quick brown fox jumps over the lazy dog" },
+            { token: "--font-mono", label: "Mono", sample: "JetBrains Mono — 0123456789 $1,234.56" },
+          ].map((f) => (
+            <div key={f.token}>
+              <span
+                style={{
+                  fontSize: "var(--text-xs)",
+                  fontWeight: "var(--weight-medium)",
+                  color: "var(--text-tertiary)",
+                  display: "block",
+                  marginBottom: "var(--spacing-01)",
+                }}
+              >
+                {f.label}{" "}
+                <span style={{ fontWeight: "var(--weight-regular)", color: "var(--text-placeholder)" }}>
+                  {f.token}
+                </span>
+              </span>
+              <span
+                style={{
+                  fontFamily: `var(${f.token})`,
+                  fontSize: "var(--text-lg)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                {f.sample}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Typography — Font Size Scale ───────────────── */}
+      <Section
+        title="Font Size Scale"
+        description="Type scale from xs (12px) to 7xl (68px)."
+      >
+        <div className="flex flex-col gap-[var(--spacing-04)]">
+          {FONT_SIZES.map((s) => (
+            <div
+              key={s.token}
+              className="flex items-baseline gap-[var(--spacing-04)]"
+            >
+              <span
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--text-tertiary)",
+                  width: "5rem",
+                  flexShrink: 0,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {s.label}{" "}
+                <span style={{ color: "var(--text-placeholder)" }}>{s.px}</span>
+              </span>
+              <span
+                style={{
+                  fontSize: `var(${s.token})`,
+                  fontFamily: "var(--font-sans)",
+                  color: "var(--text-primary)",
+                  lineHeight: 1.3,
+                }}
+              >
+                Ag
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Typography — Weights ───────────────────────── */}
+      <Section
+        title="Font Weights"
+        description="Available weight stops."
+      >
+        <div className="flex flex-wrap gap-[var(--spacing-06)]">
+          {[
+            { token: "--weight-regular", label: "Regular", val: 400 },
+            { token: "--weight-medium", label: "Medium", val: 500 },
+            { token: "--weight-semibold", label: "Semibold", val: 600 },
+            { token: "--weight-bold", label: "Bold", val: 700 },
+          ].map((w) => (
+            <div key={w.token} className="flex flex-col items-center">
+              <span
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontWeight: w.val,
+                  fontSize: "var(--text-xl)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                Aa
+              </span>
+              <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
+                {w.label} ({w.val})
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Typography — Line Heights & Tracking ──────── */}
+      <Section
+        title="Line Heights & Letter Spacing"
+        description="Leading and tracking values."
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--spacing-05)] max-w-2xl">
+          <div>
+            <span
+              style={{ fontSize: "var(--text-xs)", fontWeight: "var(--weight-medium)", color: "var(--text-secondary)", display: "block", marginBottom: "var(--spacing-03)" }}
+            >
+              Line Heights
+            </span>
+            <div className="flex flex-col gap-[var(--spacing-03)]">
+              {[
+                { token: "--leading-tight", label: "tight", val: "1.2" },
+                { token: "--leading-snug", label: "snug", val: "1.3" },
+                { token: "--leading-normal", label: "normal", val: "1.5" },
+                { token: "--leading-relaxed", label: "relaxed", val: "1.6" },
+              ].map((lh) => (
+                <div key={lh.token} className="flex items-center gap-[var(--spacing-03)]">
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)", width: "4rem" }}>
+                    {lh.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "var(--text-sm)",
+                      lineHeight: lh.val,
+                      color: "var(--text-primary)",
+                      backgroundColor: "var(--bg-layer-01)",
+                      padding: "var(--spacing-02) var(--spacing-03)",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                  >
+                    Line height {lh.val} — The quick brown fox jumps.
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span
+              style={{ fontSize: "var(--text-xs)", fontWeight: "var(--weight-medium)", color: "var(--text-secondary)", display: "block", marginBottom: "var(--spacing-03)" }}
+            >
+              Letter Spacing
+            </span>
+            <div className="flex flex-col gap-[var(--spacing-03)]">
+              {[
+                { token: "--tracking-tight", label: "tight", val: "-0.01em" },
+                { token: "--tracking-snug", label: "snug", val: "-0.005em" },
+                { token: "--tracking-normal", label: "normal", val: "0" },
+                { token: "--tracking-wide", label: "wide", val: "0.01em" },
+              ].map((ls) => (
+                <div key={ls.token} className="flex items-center gap-[var(--spacing-03)]">
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)", width: "4rem" }}>
+                    {ls.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "var(--text-sm)",
+                      letterSpacing: `var(${ls.token})`,
+                      color: "var(--text-primary)",
+                      backgroundColor: "var(--bg-layer-01)",
+                      padding: "var(--spacing-02) var(--spacing-03)",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                  >
+                    SPACING {ls.val}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── Border Radius ─────────────────────────────── */}
+      <Section
+        title="Border Radius"
+        description="Radius scale from none to full."
+      >
+        <div className="flex flex-wrap gap-[var(--spacing-05)] items-end">
+          {RADII.map((r) => (
+            <div key={r.token} className="flex flex-col items-center gap-[var(--spacing-02)]">
+              <div
+                style={{
+                  width: r.token === "--radius-full" ? "3rem" : "3rem",
+                  height: "3rem",
+                  backgroundColor: "var(--interactive)",
+                  borderRadius: `var(${r.token})`,
+                }}
+              />
+              <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>
+                {r.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Box Shadows ───────────────────────────────── */}
+      <Section
+        title="Box Shadows"
+        description="Elevation levels for layering UI."
+      >
+        <div className="flex flex-wrap gap-[var(--spacing-05)]">
+          {SHADOWS.map((s) => (
+            <div
+              key={s.token}
+              className="flex flex-col items-center gap-[var(--spacing-02)]"
+            >
+              <div
+                style={{
+                  width: "5rem",
+                  height: "3.5rem",
+                  backgroundColor: "var(--bg-layer-01)",
+                  borderRadius: "var(--radius-lg)",
+                  boxShadow: `var(${s.token})`,
+                }}
+              />
+              <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Transitions ───────────────────────────────── */}
+      <Section
+        title="Transitions"
+        description="Duration and easing primitives."
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--spacing-05)] max-w-2xl">
+          <div>
+            <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--weight-medium)", color: "var(--text-secondary)", display: "block", marginBottom: "var(--spacing-03)" }}>
+              Durations
+            </span>
+            <div className="flex flex-col gap-[var(--spacing-02)]">
+              {[
+                { token: "--duration-fast", label: "fast", val: "150ms" },
+                { token: "--duration-normal", label: "normal", val: "200ms" },
+                { token: "--duration-slow", label: "slow", val: "300ms" },
+                { token: "--duration-slower", label: "slower", val: "400ms" },
+              ].map((d) => (
+                <div key={d.token} className="flex items-center gap-[var(--spacing-03)]">
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)", width: "3.5rem" }}>
+                    {d.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "var(--text-xs)",
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--text-primary)",
+                      backgroundColor: "var(--bg-layer-01)",
+                      padding: "var(--spacing-01) var(--spacing-03)",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                  >
+                    {d.val}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--weight-medium)", color: "var(--text-secondary)", display: "block", marginBottom: "var(--spacing-03)" }}>
+              Easings
+            </span>
+            <div className="flex flex-col gap-[var(--spacing-02)]">
+              {[
+                { label: "default", val: "cubic-bezier(0.4, 0, 0.2, 1)" },
+                { label: "in", val: "cubic-bezier(0.4, 0, 1, 1)" },
+                { label: "out", val: "cubic-bezier(0, 0, 0.2, 1)" },
+                { label: "productive", val: "cubic-bezier(0.165, 0.84, 0.44, 1)" },
+              ].map((e) => (
+                <div key={e.label} className="flex items-center gap-[var(--spacing-03)]">
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)", width: "4.5rem" }}>
+                    {e.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--text-primary)",
+                      backgroundColor: "var(--bg-layer-01)",
+                      padding: "var(--spacing-01) var(--spacing-03)",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                  >
+                    {e.val}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── Layout ────────────────────────────────────── */}
+      <Section
+        title="Layout"
+        description="Fixed layout dimensions."
+      >
+        <div className="flex flex-wrap gap-[var(--spacing-05)]">
+          {[
+            { label: "Container Max", token: "--container-max", val: "1358px" },
+            { label: "Sidebar Width", token: "--sidebar-width", val: "256px" },
+            { label: "Topbar Height", token: "--topbar-height", val: "56px" },
+          ].map((l) => (
+            <div
+              key={l.token}
+              style={{
+                padding: "var(--spacing-04)",
+                backgroundColor: "var(--bg-layer-01)",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--border-subtle)",
+              }}
+            >
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)", display: "block" }}>
+                {l.label}
+              </span>
+              <span style={{ fontSize: "var(--text-sm)", fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
+                {l.val}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Section>
+    </>
   );
 }
 
@@ -1251,7 +1789,7 @@ function OverlayTab() {
    MAIN COMPONENT
    ======================================================================== */
 export default function ComponentLibrary() {
-  const [activeTab, setActiveTab] = useState<Tab>("Data Display");
+const [activeTab, setActiveTab] = useState<Tab>("Primitives");
 
   return (
     <div className="mb-content" style={{ padding: "var(--spacing-07)" }}>
@@ -1288,6 +1826,7 @@ export default function ComponentLibrary() {
         ))}
       </div>
 
+      {activeTab === "Primitives" && <PrimitivesTab />}
       {activeTab === "Data Display" && <DataDisplayTab />}
       {activeTab === "Tables" && <TablesTab />}
       {activeTab === "Forms & Controls" && <FormsTab />}

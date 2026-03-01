@@ -5,26 +5,10 @@
    ========================================================================== */
 
 /* -----------------------------------------------------------------------
-   @FONT-FACE — Custom fonts from Maybern's brand
-   Replace URLs with your own hosted font files.
+   FONTS — Loaded via Google Fonts in index.html
+   - Cormorant Garamond (serif): display & headings (400, 500, 600, 700)
+   - Inter (sans-serif): body, labels, UI (400, 500, 600, 700)
    ----------------------------------------------------------------------- */
-@font-face {
-  font-family: 'Signifier Regular';
-  src: url('/fonts/Signifier-Regular.woff2') format('woff2'),
-       url('/fonts/Signifier-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Signifier Medium';
-  src: url('/fonts/Signifier-Medium.woff2') format('woff2'),
-       url('/fonts/Signifier-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
 
 /* -----------------------------------------------------------------------
    FOUNDATION RESET
@@ -58,7 +42,7 @@
      These map to Tailwind's @apply or direct class usage.
      ----------------------------------------------------------------------- */
 
-  /* Display — hero/marketing headings (Signifier serif) */
+  /* Display — hero/marketing headings (Cormorant Garamond serif) */
   .type-display-01 {
     font-family: var(--font-serif);
     font-size: var(--text-7xl);       /* 68px */

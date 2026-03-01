@@ -1,0 +1,269 @@
+/* ==========================================================================
+   TIER 2: SEMANTIC TOKENS
+   Role-based aliases that map primitives to UI purposes.
+   USE THESE in layouts and general styling.
+
+   TIER 3: COMPONENT TOKENS
+   Scoped to specific components. Built from semantic tokens.
+   USE THESE when building or customizing specific components.
+   ========================================================================== */
+
+:root {
+  /* =====================================================================
+     TIER 2 — SEMANTIC TOKENS
+     ===================================================================== */
+
+  /* -----------------------------------------------------------------------
+     BACKGROUNDS — Carbon-inspired layer model
+     Use `bg` for page background. Each nested surface increments the layer.
+     Layer-01 sits ON bg. Layer-02 sits ON layer-01. Layer-03 on layer-02.
+     ----------------------------------------------------------------------- */
+  --bg:             var(--surface-green-tint);  /* #f9fcfa — page canvas */
+  --bg-layer-01:    #ffffff;                     /* cards, panels on page */
+  --bg-layer-02:    var(--gray-50);              /* nested surfaces on layer-01 */
+  --bg-layer-03:    var(--gray-100);             /* deeply nested surfaces */
+  --bg-inverse:     var(--gray-900);             /* dark backgrounds */
+  --bg-brand:       var(--green-600);            /* #08331f — brand hero/header */
+  --bg-brand-light: var(--green-50);             /* light brand tint */
+  --bg-brand-subtle: var(--surface-mint);        /* #d8f3e7 — highlight areas */
+  --bg-overlay:     rgba(16, 24, 40, 0.6);       /* modal/dialog overlay */
+  --bg-hover:       rgba(16, 24, 40, 0.04);      /* subtle hover on surfaces */
+  --bg-active:      rgba(16, 24, 40, 0.08);      /* subtle active/pressed */
+  --bg-selected:    var(--green-50);              /* selected row/item */
+  --bg-disabled:    var(--gray-100);              /* disabled input bg */
+
+  /* -----------------------------------------------------------------------
+     TEXT
+     ----------------------------------------------------------------------- */
+  --text-primary:     var(--gray-900);   /* #101828 — headings, body text */
+  --text-secondary:   var(--gray-600);   /* #475467 — supporting text */
+  --text-tertiary:    var(--gray-500);   /* #667085 — muted/subtle text */
+  --text-placeholder: var(--gray-400);   /* #98a2b3 — input placeholders */
+  --text-disabled:    var(--gray-300);   /* #d0d5dd — disabled state */
+  --text-inverse:     #ffffff;            /* text on dark backgrounds */
+  --text-on-color:    #ffffff;            /* text on colored backgrounds */
+  --text-brand:       var(--green-400);   /* #266044 — brand-colored text */
+  --text-error:       var(--red-600);     /* #d92d20 — error messages */
+  --text-link:        var(--blue-600);    /* #1570ef — hyperlinks */
+  --text-link-hover:  var(--blue-700);    /* #175cd3 — link hover state */
+
+  /* -----------------------------------------------------------------------
+     ICONS
+     ----------------------------------------------------------------------- */
+  --icon-primary:     var(--gray-900);
+  --icon-secondary:   var(--gray-500);
+  --icon-disabled:    var(--gray-300);
+  --icon-inverse:     #ffffff;
+  --icon-brand:       var(--green-400);
+  --icon-error:       var(--red-500);
+  --icon-warning:     var(--amber-500);
+  --icon-success:     var(--teal-500);
+  --icon-info:        var(--blue-500);
+
+  /* -----------------------------------------------------------------------
+     BORDERS
+     ----------------------------------------------------------------------- */
+  --border-subtle:      var(--gray-200);   /* #e5e7eb — card borders, dividers */
+  --border-strong:      var(--gray-300);   /* #d0d5dd — input borders, table lines */
+  --border-interactive: var(--green-400);  /* #266044 — focus/active borders */
+  --border-disabled:    var(--gray-200);   /* disabled state border */
+  --border-error:       var(--red-500);    /* #f04438 — error state */
+  --border-inverse:     var(--gray-700);   /* borders on dark backgrounds */
+
+  /* -----------------------------------------------------------------------
+     INTERACTIVE — Primary action color + states
+     ----------------------------------------------------------------------- */
+  --interactive:          var(--green-400);  /* #266044 — primary action */
+  --interactive-hover:    var(--green-500);  /* #1e4734 */
+  --interactive-active:   var(--green-600);  /* #08331f */
+  --interactive-disabled: var(--gray-300);   /* #d0d5dd */
+
+  /* Secondary interactive */
+  --interactive-secondary:        var(--green-100);  /* #b4e2cc */
+  --interactive-secondary-hover:  var(--green-200);  /* #6db995 */
+  --interactive-secondary-active: var(--green-300);  /* #44936d */
+
+  /* Focus ring */
+  --focus:        var(--green-400);
+  --focus-ring:   var(--shadow-focus);
+
+  /* -----------------------------------------------------------------------
+     SUPPORT — Status/feedback colors
+     ----------------------------------------------------------------------- */
+  --support-error:          var(--red-500);
+  --support-error-light:    var(--red-50);
+  --support-error-dark:     var(--red-700);
+
+  --support-warning:        var(--amber-500);
+  --support-warning-light:  var(--amber-50);
+  --support-warning-dark:   var(--amber-700);
+
+  --support-success:        var(--teal-500);
+  --support-success-light:  var(--teal-50);
+  --support-success-dark:   var(--teal-700);
+
+  --support-info:           var(--blue-500);
+  --support-info-light:     var(--blue-50);
+  --support-info-dark:      var(--blue-700);
+
+  /* -----------------------------------------------------------------------
+     DATA VISUALIZATION (minimal set for charts/graphs)
+     ----------------------------------------------------------------------- */
+  --data-01: var(--green-300);   /* primary data series */
+  --data-02: var(--blue-500);    /* secondary series */
+  --data-03: var(--amber-400);   /* tertiary series */
+  --data-04: var(--teal-400);    /* quaternary series */
+  --data-05: var(--red-400);     /* quinary series */
+  --data-06: var(--gray-400);    /* senary / neutral series */
+
+
+  /* =====================================================================
+     TIER 3 — COMPONENT TOKENS
+     ===================================================================== */
+
+  /* -----------------------------------------------------------------------
+     BUTTON
+     ----------------------------------------------------------------------- */
+  /* Primary */
+  --button-primary-bg:          var(--interactive);
+  --button-primary-bg-hover:    var(--interactive-hover);
+  --button-primary-bg-active:   var(--interactive-active);
+  --button-primary-text:        var(--text-on-color);
+  --button-primary-border:      transparent;
+
+  /* Secondary */
+  --button-secondary-bg:          var(--interactive-secondary);
+  --button-secondary-bg-hover:    var(--interactive-secondary-hover);
+  --button-secondary-bg-active:   var(--interactive-secondary-active);
+  --button-secondary-text:        var(--text-primary);
+  --button-secondary-border:      transparent;
+
+  /* Ghost */
+  --button-ghost-bg:          transparent;
+  --button-ghost-bg-hover:    var(--bg-hover);
+  --button-ghost-bg-active:   var(--bg-active);
+  --button-ghost-text:        var(--interactive);
+  --button-ghost-border:      transparent;
+
+  /* Danger */
+  --button-danger-bg:          var(--red-600);
+  --button-danger-bg-hover:    var(--red-700);
+  --button-danger-bg-active:   var(--red-800);
+  --button-danger-text:        var(--text-on-color);
+  --button-danger-border:      transparent;
+
+  /* Outline */
+  --button-outline-bg:          transparent;
+  --button-outline-bg-hover:    var(--bg-hover);
+  --button-outline-bg-active:   var(--bg-active);
+  --button-outline-text:        var(--text-primary);
+  --button-outline-border:      var(--border-strong);
+
+  /* Disabled (all variants) */
+  --button-disabled-bg:          var(--gray-100);
+  --button-disabled-text:        var(--text-disabled);
+  --button-disabled-border:      transparent;
+
+  /* -----------------------------------------------------------------------
+     INPUT / FORM CONTROLS
+     ----------------------------------------------------------------------- */
+  --input-bg:               var(--bg-layer-01);
+  --input-bg-hover:         var(--bg-layer-01);
+  --input-bg-disabled:      var(--bg-disabled);
+  --input-border:           var(--border-strong);
+  --input-border-hover:     var(--gray-400);
+  --input-border-focus:     var(--focus);
+  --input-border-error:     var(--border-error);
+  --input-text:             var(--text-primary);
+  --input-text-placeholder: var(--text-placeholder);
+  --input-text-disabled:    var(--text-disabled);
+  --input-label:            var(--text-secondary);
+  --input-helper:           var(--text-tertiary);
+  --input-error-text:       var(--text-error);
+
+  /* -----------------------------------------------------------------------
+     DATA TABLE
+     ----------------------------------------------------------------------- */
+  --table-header-bg:          var(--gray-50);
+  --table-header-text:        var(--text-secondary);
+  --table-row-bg:             var(--bg-layer-01);
+  --table-row-bg-hover:       var(--bg-hover);
+  --table-row-bg-selected:    var(--bg-selected);
+  --table-row-bg-zebra:       var(--gray-50);
+  --table-cell-text:          var(--text-primary);
+  --table-cell-text-secondary: var(--text-secondary);
+  --table-border:             var(--border-subtle);
+
+  /* -----------------------------------------------------------------------
+     CARD / PANEL
+     ----------------------------------------------------------------------- */
+  --card-bg:                var(--bg-layer-01);
+  --card-bg-hover:          var(--bg-layer-01);
+  --card-border:            var(--border-subtle);
+  --card-shadow:            var(--shadow-xs);
+  --card-shadow-hover:      var(--shadow-sm);
+  --card-title:             var(--text-primary);
+  --card-body:              var(--text-secondary);
+  --card-radius:            var(--radius-lg);
+
+  /* -----------------------------------------------------------------------
+     BADGE / TAG
+     ----------------------------------------------------------------------- */
+  --badge-neutral-bg:     var(--gray-100);
+  --badge-neutral-text:   var(--gray-700);
+  --badge-success-bg:     var(--teal-50);
+  --badge-success-text:   var(--teal-700);
+  --badge-warning-bg:     var(--amber-50);
+  --badge-warning-text:   var(--amber-700);
+  --badge-error-bg:       var(--red-50);
+  --badge-error-text:     var(--red-700);
+  --badge-info-bg:        var(--blue-50);
+  --badge-info-text:      var(--blue-700);
+  --badge-brand-bg:       var(--green-50);
+  --badge-brand-text:     var(--green-500);
+
+  /* -----------------------------------------------------------------------
+     NAVIGATION
+     ----------------------------------------------------------------------- */
+  --nav-bg:               var(--surface-green-tint);
+  --nav-bg-dark:          var(--green-600);
+  --nav-text:             var(--text-primary);
+  --nav-text-active:      var(--green-400);
+  --nav-text-hover:       var(--text-primary);
+  --nav-border:           var(--border-subtle);
+
+  /* Sidebar */
+  --sidebar-bg:           var(--bg-layer-01);
+  --sidebar-item-hover:   var(--bg-hover);
+  --sidebar-item-active:  var(--bg-selected);
+  --sidebar-item-text:    var(--text-secondary);
+  --sidebar-item-text-active: var(--text-brand);
+  --sidebar-border:       var(--border-subtle);
+
+  /* -----------------------------------------------------------------------
+     MODAL / DIALOG
+     ----------------------------------------------------------------------- */
+  --modal-bg:             var(--bg-layer-01);
+  --modal-overlay:        var(--bg-overlay);
+  --modal-border:         var(--border-subtle);
+  --modal-shadow:         var(--shadow-xl);
+  --modal-radius:         var(--radius-xl);
+
+  /* -----------------------------------------------------------------------
+     TABS
+     ----------------------------------------------------------------------- */
+  --tab-bg:              transparent;
+  --tab-bg-active:       var(--bg-layer-01);
+  --tab-text:            var(--text-tertiary);
+  --tab-text-active:     var(--text-primary);
+  --tab-border:          var(--border-subtle);
+  --tab-border-active:   var(--interactive);
+  --tab-indicator:       var(--interactive);
+
+  /* -----------------------------------------------------------------------
+     TOOLTIP
+     ----------------------------------------------------------------------- */
+  --tooltip-bg:          var(--gray-900);
+  --tooltip-text:        var(--text-inverse);
+  --tooltip-radius:      var(--radius-md);
+}

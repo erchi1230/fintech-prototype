@@ -1,0 +1,38 @@
+[
+  {
+    "id": "fund-001",
+    "name": "Maybern Fund III",
+    "vintage": 2019,
+    "size": 500000000,
+    "deployed": 425000000,
+    "status": "Active",
+    "strategy": "Buyout",
+    "irr": 0.182,
+    "tvpi": 1.65,
+    "dpi": 0.42
+  },
+  {
+    "id": "fund-002",
+    "name": "Maybern Fund IV",
+    "vintage": 2021,
+    "size": 750000000,
+    "deployed": 312000000,
+    "status": "Active",
+    "strategy": "Growth Equity",
+    "irr": 0.241,
+    "tvpi": 1.89,
+    "dpi": 0.15
+  },
+  {
+    "id": "fund-003",
+    "name": "Maybern Fund V",
+    "vintage": 2023,
+    "size": 1000000000,
+    "deployed": 125000000,
+    "status": "Deploying",
+    "strategy": "Buyout",
+    "irr": 0.0,
+    "tvpi": 1.02,
+    "dpi": 0.0
+  }
+]

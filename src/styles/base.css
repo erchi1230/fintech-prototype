@@ -1,0 +1,237 @@
+/* ==========================================================================
+   BASE STYLES
+   @font-face declarations, typography presets, and foundation styles.
+   Applied globally via @layer base.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------
+   @FONT-FACE — Custom fonts from Maybern's brand
+   Replace URLs with your own hosted font files.
+   ----------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Signifier Regular';
+  src: url('/fonts/Signifier-Regular.woff2') format('woff2'),
+       url('/fonts/Signifier-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Signifier Medium';
+  src: url('/fonts/Signifier-Medium.woff2') format('woff2'),
+       url('/fonts/Signifier-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -----------------------------------------------------------------------
+   FOUNDATION RESET
+   ----------------------------------------------------------------------- */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);        /* 14px — data-dense default */
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+    background-color: var(--bg);
+  }
+
+  /* -----------------------------------------------------------------------
+     TYPOGRAPHY PRESETS — Type Tokens
+     Naming convention: [category]-[number]
+     These map to Tailwind's @apply or direct class usage.
+     ----------------------------------------------------------------------- */
+
+  /* Display — hero/marketing headings (Signifier serif) */
+  .type-display-01 {
+    font-family: var(--font-serif);
+    font-size: var(--text-7xl);       /* 68px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-snug);  /* 1.3 */
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+  .type-display-02 {
+    font-family: var(--font-serif);
+    font-size: var(--text-6xl);       /* 56px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  /* Headings — section/page headings */
+  .type-heading-01 {
+    font-family: var(--font-serif);
+    font-size: var(--text-5xl);       /* 48px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-tight); /* 1.2 */
+    letter-spacing: var(--tracking-tight);
+  }
+  .type-heading-02 {
+    font-family: var(--font-serif-medium);
+    font-size: var(--text-4xl);       /* 40px */
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+  }
+  .type-heading-03 {
+    font-family: var(--font-serif-medium);
+    font-size: var(--text-3xl);       /* 32px */
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-snug);
+  }
+  .type-heading-04 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xl);        /* 24px */
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-snug);
+  }
+  .type-heading-05 {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);        /* 20px */
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* Body — content text */
+  .type-body-01 {
+    font-family: var(--font-sans);
+    font-size: var(--text-md);        /* 18px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal); /* 1.5 */
+    letter-spacing: var(--tracking-normal);
+  }
+  .type-body-02 {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);        /* 14px — default for data UIs */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* Labels — form labels, table headers, section labels */
+  .type-label-01 {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);        /* 14px */
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+    color: var(--text-secondary);
+  }
+  .type-label-02 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);        /* 12px */
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  /* Caption — helper text, timestamps, metadata */
+  .type-caption-01 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);        /* 12px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+    color: var(--text-tertiary);
+  }
+
+  /* Code — monospace for data/numbers */
+  .type-code-01 {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);        /* 14px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+  }
+  .type-code-02 {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);        /* 12px */
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* Data — numeric values in tables/KPIs (tabular-nums for alignment) */
+  .type-data-01 {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-normal);
+    font-variant-numeric: tabular-nums;
+  }
+  .type-data-02 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-normal);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* KPI — large numeric displays */
+  .type-kpi {
+    font-family: var(--font-sans);
+    font-size: var(--text-3xl);       /* 32px */
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* -----------------------------------------------------------------------
+     BASE ELEMENT STYLES
+     ----------------------------------------------------------------------- */
+  a {
+    color: var(--text-link);
+    text-decoration: none;
+    transition: color var(--duration-normal) var(--ease-default);
+  }
+  a:hover {
+    color: var(--text-link-hover);
+    text-decoration: underline;
+  }
+
+  /* Scrollbar styling for data-dense views */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: var(--radius-pill);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+  }
+
+  /* Selection highlight */
+  ::selection {
+    background-color: var(--green-100);
+    color: var(--green-600);
+  }
+}

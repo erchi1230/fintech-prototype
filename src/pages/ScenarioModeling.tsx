@@ -21,15 +21,34 @@ const GRID_COLS = `${LABEL_COL} 1fr 1fr 1fr`;
 
 /* ── Zone 1 data ──────────────────────────────────────────────────── */
 const SCENARIOS = [
-  { key: "base", label: "Base Case", irr: "18.2%", irrDelta: null,      lpDist: "$1.40B", lpDelta: null       },
-  { key: "up",   label: "Upside",    irr: "27.6%", irrDelta: "+9.4pp",  irrDeltaUp: true,  lpDist: "$1.68B", lpDelta: "+$0.28B", lpDeltaUp: true  },
-  { key: "down", label: "Downside",  irr: "11.4%", irrDelta: "−6.8pp",  irrDeltaUp: false, lpDist: "$1.12B", lpDelta: "−$0.28B", lpDeltaUp: false },
+  {
+    key: "base", label: "Base Case",
+    irr: "18.2%",  irrDelta: null,       irrUp: null,
+    moic: "2.0x",  moicDelta: null,      moicUp: null,
+    lpDist: "$1.85B", lpDistDelta: null,    lpDistUp: null,
+    gpDist: "$80M",   gpDistDelta: null,    gpDistUp: null,
+    mgmtFee: "$75M",  mgmtFeeDelta: null,   mgmtFeeUp: null,
+  },
+  {
+    key: "up",   label: "Upside",
+    irr: "27.6%",  irrDelta: "+9.4pp",   irrUp: true,
+    moic: "2.5x",  moicDelta: "+0.5x",   moicUp: true,
+    lpDist: "$2.28B", lpDistDelta: "+$0.43B", lpDistUp: true,
+    gpDist: "$160M",  gpDistDelta: "+$80M",   gpDistUp: true,
+    mgmtFee: "$60M",  mgmtFeeDelta: "−$15M",  mgmtFeeUp: false,
+  },
+  {
+    key: "down", label: "Downside",
+    irr: "11.4%",  irrDelta: "−6.8pp",   irrUp: false,
+    moic: "1.5x",  moicDelta: "−0.5x",   moicUp: false,
+    lpDist: "$1.40B", lpDistDelta: "−$0.45B", lpDistUp: false,
+    gpDist: "$60M",   gpDistDelta: "−$20M",   gpDistUp: false,
+    mgmtFee: "$105M", mgmtFeeDelta: "+$30M",  mgmtFeeUp: true,
+  },
 ];
 
-type ConfidenceStatus = "Final" | "Preliminary";
-const CONFIDENCE_STATUS: ConfidenceStatus = "Final";
-const CONFIDENCE_LABEL  = "Last calculated: Jun 30, 2025 at 9:42am";
-const SECTION_LABEL     = "Net IRR & LP Distributions Across Scenarios";
+const CONFIDENCE_LABEL = "Last calculated: Jun 30, 2025 at 9:42am";
+const SECTION_LABEL     = "Fund Performance Across Scenarios";
 const FUND_CONTEXT      = "Total Capital Invested: $1,000,000,000";
 
 /* ── Zone 2 data ──────────────────────────────────────────────────── */
@@ -132,7 +151,7 @@ const GP_METRICS: MetricDef[] = [
   },
   {
     key: "mgmt-fee",
-    label: "Total Management Fee Income",
+    label: "Total Management Fee",
     values: ["$75M", "$60M", "$105M"],
     deltas: ["—", "− $15M vs. Base", "+ $30M vs. Base"],
     steps: [
@@ -140,7 +159,7 @@ const GP_METRICS: MetricDef[] = [
       { label: "Annual Fee Rate",             values: ["1.5%",    "1.5%",    "1.5%"]    },
       { label: "Quarterly Fee",               values: ["$3.75M",  "$3.75M",  "$3.75M"]  },
       { label: "Number of Quarters",          values: ["20",      "16",      "28"]       },
-      { label: "Total Management Fee Income", values: ["$75M",    "$60M",    "$105M"],    isConclusion: true },
+      { label: "Total Management Fee", values: ["$75M",    "$60M",    "$105M"],    isConclusion: true },
     ],
     footnote: "Management fee total varies across scenarios because hold period determines number of quarters fees are charged.",
   },
@@ -150,11 +169,6 @@ const GP_METRICS: MetricDef[] = [
    SHARED PRIMITIVES
    ======================================================================== */
 
-function GridDivider() {
-  return (
-    <div style={{ gridColumn: "1 / -1", height: 1, backgroundColor: "var(--border-subtle)" }} />
-  );
-}
 
 function VerticalRule() {
   return (
@@ -174,7 +188,27 @@ function VerticalRule() {
    ZONE 1 HELPERS
    ======================================================================== */
 
+type ScenarioRow = typeof SCENARIOS[number];
+
+function deltaBadgeStyle(isUp: boolean | null): React.CSSProperties {
+  if (isUp === true)  return { backgroundColor: "var(--bg-brand-light)",    color: "var(--interactive)" };
+  if (isUp === false) return { backgroundColor: "var(--support-error-light)", color: "var(--support-error-dark)" };
+  return {};
+}
+
 function ComparisonPanel() {
+  const dataRows: {
+    label: string;
+    values: (s: ScenarioRow) => string;
+    delta: (s: ScenarioRow) => string | null;
+    isUp:  (s: ScenarioRow) => boolean | null;
+  }[] = [
+    { label: "Gross MOIC to LP",       values: (s) => s.moic,    delta: (s) => s.moicDelta,    isUp: (s) => s.moicUp    },
+    { label: "Total LP Distributions", values: (s) => s.lpDist,  delta: (s) => s.lpDistDelta,  isUp: (s) => s.lpDistUp  },
+    { label: "Total GP Distributions", values: (s) => s.gpDist,  delta: (s) => s.gpDistDelta,  isUp: (s) => s.gpDistUp  },
+    { label: "Total Management Fee",   values: (s) => s.mgmtFee, delta: (s) => s.mgmtFeeDelta, isUp: (s) => s.mgmtFeeUp },
+  ];
+
   return (
     <div
       style={{
@@ -182,26 +216,32 @@ function ComparisonPanel() {
         gridTemplateColumns: GRID_COLS,
         paddingLeft: H_PAD,
         paddingRight: H_PAD,
-        paddingTop: "var(--spacing-05)",
-        paddingBottom: "var(--spacing-05)",
+        paddingTop: "var(--spacing-04)",
+        paddingBottom: "var(--spacing-04)",
       }}
     >
-      <div style={{ paddingBottom: "var(--spacing-03)" }} />
+      {/* Scenario column headers */}
+      <div style={{ paddingBottom: "var(--spacing-03)", paddingTop: "var(--spacing-03)" }} />
       {SCENARIOS.map((s) => (
         <div
           key={s.key}
           className="type-label-02"
-          style={{ color: "var(--text-primary)", textTransform: "uppercase", paddingBottom: "var(--spacing-03)" }}
+          style={{
+            color: "var(--text-primary)",
+            textTransform: "uppercase",
+            paddingBottom: "var(--spacing-03)",
+            paddingTop: "var(--spacing-03)",
+            paddingLeft: "var(--spacing-05)",
+            borderLeft: "1px solid var(--border-subtle)",
+          }}
         >
           {s.label}
         </div>
       ))}
 
-      <GridDivider />
-
-      {/* Net IRR */}
+      {/* Net IRR — headline metric, type-kpi */}
       <div
-        className="type-body-02"
+        className="type-kpi"
         style={{
           color: "var(--text-secondary)",
           textAlign: "right",
@@ -218,74 +258,72 @@ function ComparisonPanel() {
       {SCENARIOS.map((s) => (
         <div
           key={s.key}
+          className="type-kpi"
           style={{
+            color: "var(--text-primary)",
+            paddingTop: "var(--spacing-05)",
+            paddingBottom: "var(--spacing-05)",
+            paddingLeft: "var(--spacing-05)",
+            borderLeft: "1px solid var(--border-subtle)",
             display: "flex",
             alignItems: "center",
             gap: "var(--spacing-03)",
-            paddingTop: "var(--spacing-05)",
-            paddingBottom: "var(--spacing-05)",
           }}
         >
-          <span className="type-kpi" style={{ color: "var(--text-primary)" }}>{s.irr}</span>
+          {s.irr}
           {s.irrDelta && (
-            <span
-              className="mb-badge"
-              style={
-                s.irrDeltaUp
-                  ? { backgroundColor: "var(--bg-brand-light)", color: "var(--interactive)" }
-                  : { backgroundColor: "var(--support-error-light)", color: "var(--support-error-dark)" }
-              }
-            >
+            <span className="mb-badge type-caption-01" style={{ ...deltaBadgeStyle(s.irrUp), fontVariantNumeric: "tabular-nums" }}>
               {s.irrDelta}
             </span>
           )}
         </div>
       ))}
 
-      {/* Total LP Distributions */}
-      <div
-        className="type-body-02"
-        style={{
-          color: "var(--text-secondary)",
-          textAlign: "right",
-          paddingRight: "var(--spacing-05)",
-          paddingBottom: "var(--spacing-05)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
-        Total LP Distributions
-      </div>
-      {SCENARIOS.map((s) => (
-        <div
-          key={s.key}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--spacing-03)",
-            paddingBottom: "var(--spacing-05)",
-          }}
-        >
-          <span
-            className="type-heading-05"
-            style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}
+      {/* Compact data rows — body text, tabular */}
+      {dataRows.map((row) => (
+        <>
+          <div
+            key={`${row.label}-label`}
+            className="type-body-02"
+            style={{
+              color: "var(--text-secondary)",
+              textAlign: "right",
+              paddingRight: "var(--spacing-05)",
+              paddingTop: "var(--spacing-03)",
+              paddingBottom: "var(--spacing-03)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
           >
-            {s.lpDist}
-          </span>
-          {s.lpDelta && (
-            <span
-              className="mb-badge"
-              style={
-                s.lpDeltaUp
-                  ? { backgroundColor: "var(--bg-brand-light)", color: "var(--interactive)" }
-                  : { backgroundColor: "var(--support-error-light)", color: "var(--support-error-dark)" }
-              }
+            {row.label}
+          </div>
+          {SCENARIOS.map((s) => (
+            <div
+              key={`${row.label}-${s.key}`}
+              className="type-body-02"
+              style={{
+                color: "var(--text-primary)",
+                fontVariantNumeric: "tabular-nums",
+                fontWeight: "var(--weight-medium)",
+                paddingTop: "var(--spacing-03)",
+                paddingBottom: "var(--spacing-03)",
+                paddingLeft: "var(--spacing-05)",
+                borderLeft: "1px solid var(--border-subtle)",
+                display: "flex",
+                alignItems: "center",
+                gap: "var(--spacing-02)",
+              }}
             >
-              {s.lpDelta}
-            </span>
-          )}
-        </div>
+              {row.values(s)}
+              {row.delta(s) && (
+                <span className="mb-badge type-caption-01" style={{ ...deltaBadgeStyle(row.isUp(s)), fontVariantNumeric: "tabular-nums" }}>
+                  {row.delta(s)}
+                </span>
+              )}
+            </div>
+          ))}
+        </>
       ))}
     </div>
   );
@@ -296,7 +334,6 @@ function ComparisonPanel() {
    ======================================================================== */
 function Zone1({ onHeightChange }: { onHeightChange: (h: number) => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  const badgeVariant = CONFIDENCE_STATUS === "Final" ? "mb-badge--success" : "mb-badge--warning";
 
   useEffect(() => {
     const el = ref.current;
@@ -337,10 +374,7 @@ function Zone1({ onHeightChange }: { onHeightChange: (h: number) => void }) {
         <div style={{ display: "flex", alignItems: "center" }}>
           <span className="type-caption-01" style={{ color: "var(--text-secondary)" }}>{FUND_CONTEXT}</span>
           <VerticalRule />
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-03)" }}>
-            <span className="type-caption-01" style={{ color: "var(--text-secondary)" }}>{CONFIDENCE_LABEL}</span>
-            <span className={`mb-badge ${badgeVariant}`}>{CONFIDENCE_STATUS}</span>
-          </div>
+          <span className="type-caption-01" style={{ color: "var(--text-secondary)" }}>{CONFIDENCE_LABEL}</span>
         </div>
       </div>
       <ComparisonPanel />
@@ -791,7 +825,7 @@ function MetricRow({ metric, expanded, onToggle }: {
           />
         </div>
 
-        {/* Value cells — right-aligned per Zone 3 spec */}
+        {/* Value cells — left-aligned, matching Zone 1 and Zone 2 */}
         {metric.values.map((val, i) => (
           <div
             key={i}
@@ -800,10 +834,8 @@ function MetricRow({ metric, expanded, onToggle }: {
               color: "var(--text-primary)",
               fontWeight: "var(--weight-medium)",
               fontVariantNumeric: "tabular-nums",
-              textAlign: "right",
               paddingTop: "var(--spacing-03)",
               paddingBottom: "var(--spacing-03)",
-              paddingRight: i === 2 ? 0 : "var(--spacing-05)",
             }}
           >
             {val}
@@ -828,9 +860,7 @@ function MetricRow({ metric, expanded, onToggle }: {
             className="type-caption-01"
             style={{
               color: i === 0 ? "var(--text-tertiary)" : "var(--text-secondary)",
-              textAlign: i === 0 ? "left" : "right",
               paddingBottom: "var(--spacing-03)",
-              paddingRight: i === 2 ? 0 : "var(--spacing-05)",
             }}
           >
             {delta}
@@ -886,13 +916,10 @@ function MetricRow({ metric, expanded, onToggle }: {
                         color: isWarning ? "var(--support-error-dark)" : "var(--text-primary)",
                         fontWeight: step.isConclusion ? "var(--weight-medium)" : undefined,
                         fontVariantNumeric: "tabular-nums",
-                        textAlign: "right",
                         paddingTop: "var(--spacing-02)",
                         paddingBottom: "var(--spacing-02)",
-                        paddingRight: colIdx === 2 ? 0 : "var(--spacing-05)",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "flex-end",
                         gap: "var(--spacing-01)",
                       }}
                     >
@@ -980,8 +1007,6 @@ function Zone3() {
             style={{
               color: "var(--text-secondary)",
               textTransform: "uppercase",
-              textAlign: "right",
-              paddingRight: s.key === "down" ? 0 : "var(--spacing-05)",
             }}
           >
             {s.label}

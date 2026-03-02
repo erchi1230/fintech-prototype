@@ -4,6 +4,7 @@ import {
   Briefcase,
   ArrowLeftRight,
   Palette,
+  LineChart,
 } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import Portfolio from "@/pages/Portfolio";
@@ -15,6 +16,7 @@ const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+  { to: "/scenario-modeling", label: "Scenario Modeling", icon: LineChart },
 ];
 
 const designItems = [

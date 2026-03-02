@@ -28,7 +28,7 @@ const UP = {
 type ConfidenceStatus = "Final" | "Preliminary";
 const CONFIDENCE_STATUS: ConfidenceStatus = "Final";
 const CONFIDENCE_LABEL = "Last calculated: Jun 30, 2025 at 9:42am";
-const SECTION_LABEL = "Fund Performance Overview";
+const SECTION_LABEL = "Net IRR Across Scenarios";
 
 /* ── Horizontal padding matching the global topbar ──────────────── */
 const H_PAD = "var(--spacing-07)"; /* 24px — matches .mb-topbar */

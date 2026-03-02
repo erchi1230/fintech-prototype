@@ -1160,7 +1160,7 @@ function Zone2() {
   ];
 
   return (
-    <div style={{ backgroundColor: "var(--bg)" }}>
+    <div style={{ backgroundColor: "var(--bg-layer-01)" }}>
       {/* Section header */}
       <div
         style={{
@@ -1168,30 +1168,21 @@ function Zone2() {
           paddingRight: H_PAD,
           paddingTop: "var(--spacing-05)",
           paddingBottom: "var(--spacing-05)",
-          borderTop: "1px solid var(--border-subtle)",
           borderBottom: "1px solid var(--border-subtle)",
+          display: "flex",
+          alignItems: "baseline",
+          gap: "var(--spacing-03)",
+          justifyContent: "space-between",
         }}
       >
         <span className="type-heading-06" style={{ color: "var(--text-primary)" }}>
           Scenario Assumptions &amp; Sensitivity
         </span>
-      </div>
-
-      {/* Held constant band */}
-      <div
-        style={{
-          paddingLeft: H_PAD,
-          paddingRight: H_PAD,
-          paddingTop: "var(--spacing-04)",
-          paddingBottom: "var(--spacing-04)",
-          backgroundColor: "var(--bg-layer-02)",
-          borderTop: "1px solid var(--border-subtle)",
-          borderBottom: "1px solid var(--border-subtle)",
-        }}
-      >
-        <span className="type-caption-01" style={{ color: "var(--text-tertiary)" }}>
-          Held constant per table: Management Fee 1.5% quarterly · Carried Interest 20% · Total Capital
-          Invested $1,000,000,000
+        <span
+          className="type-caption-01"
+          style={{ color: "var(--text-tertiary)", textAlign: "right" }}
+        >
+          Held constant: Mgmt fee 1.5% · Carry 20% · Capital $1B
         </span>
       </div>
 
@@ -1479,7 +1470,7 @@ function Zone3() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: "var(--bg)" }}>
+    <div style={{ backgroundColor: "var(--bg-layer-01)" }}>
 
       {/* Section header */}
       <div
@@ -1764,9 +1755,11 @@ export default function ScenarioModeling() {
       <div ref={zone1Ref} id="zone1">
         <Zone1 />
       </div>
+      <div style={{ height: "8px", backgroundColor: "var(--bg-layer-02)" }} aria-hidden />
       <div ref={zone2Ref} id="zone2">
         <Zone2 />
       </div>
+      <div style={{ height: "8px", backgroundColor: "var(--bg-layer-02)" }} aria-hidden />
       <div ref={zone3Ref} id="zone3">
         <Zone3 />
       </div>

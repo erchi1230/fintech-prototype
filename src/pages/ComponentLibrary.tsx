@@ -21,6 +21,7 @@ import {
    ======================================================================== */
 const tabs = [
   "Primitives",
+  "Typography",
   "Data Display",
   "Tables",
   "Forms & Controls",
@@ -139,6 +140,192 @@ const SHADOWS = [
   { token: "--shadow-xl", label: "xl" },
   { token: "--shadow-focus", label: "focus" },
 ];
+
+/* ========================================================================
+   TYPOGRAPHY TAB
+   Full type ramp — all .type-* presets from base.css
+   ======================================================================== */
+
+const TYPE_RAMP = [
+  {
+    group: "Display",
+    family: "Cormorant Garamond",
+    note: "Serif — hero and marketing headings only",
+    presets: [
+      { cls: "type-display-01", label: "Display 01", meta: "68px · Regular · Serif · tracking-tight",  sample: "Fund Performance" },
+      { cls: "type-display-02", label: "Display 02", meta: "56px · Regular · Serif · tracking-tight",  sample: "Fund Performance" },
+    ],
+  },
+  {
+    group: "Headings",
+    family: "Cormorant Garamond (01–03) · Inter (04–05)",
+    note: "Serif for large architectural headings; Sans for card and panel headings",
+    presets: [
+      { cls: "type-heading-01", label: "Heading 01", meta: "48px · Regular · Serif",   sample: "Fund Performance Overview" },
+      { cls: "type-heading-02", label: "Heading 02", meta: "40px · Medium · Serif",    sample: "Growth Equity Fund IV" },
+      { cls: "type-heading-03", label: "Heading 03", meta: "32px · Medium · Serif",    sample: "Portfolio Summary" },
+      { cls: "type-heading-04", label: "Heading 04", meta: "24px · Semibold · Sans",  sample: "Capital Deployment" },
+      { cls: "type-heading-05", label: "Heading 05", meta: "20px · Semibold · Sans",  sample: "Q4 2024 Performance" },
+    ],
+  },
+  {
+    group: "Body",
+    family: "Inter",
+    note: "Primary reading text — 01 for prose, 02 for dense data UI (default)",
+    presets: [
+      { cls: "type-body-01", label: "Body 01", meta: "18px · Regular · Sans · leading-normal",  sample: "Net asset value represents the total value of the fund's assets minus liabilities." },
+      { cls: "type-body-02", label: "Body 02", meta: "14px · Regular · Sans · leading-normal",  sample: "Net asset value represents the total value of the fund's assets minus liabilities." },
+    ],
+  },
+  {
+    group: "Labels",
+    family: "Inter",
+    note: "Form labels, table headers, sidebar section overlines",
+    presets: [
+      { cls: "type-label-01", label: "Label 01", meta: "14px · Medium · Sans · Secondary color",                    sample: "Fund Name" },
+      { cls: "type-label-02", label: "Label 02", meta: "12px · Medium · Sans · Uppercase · Tertiary · tracking-wide", sample: "Fund Management" },
+    ],
+  },
+  {
+    group: "Caption",
+    family: "Inter",
+    note: "Helper text, timestamps, metadata",
+    presets: [
+      { cls: "type-caption-01", label: "Caption 01", meta: "12px · Regular · Sans · Tertiary color", sample: "Last updated Jun 30, 2025 at 9:42am" },
+    ],
+  },
+  {
+    group: "Code",
+    family: "JetBrains Mono",
+    note: "Monospace for tokens, code snippets, and technical values",
+    presets: [
+      { cls: "type-code-01", label: "Code 01", meta: "14px · Regular · Mono", sample: "--font-sans: 'Inter', system-ui, sans-serif" },
+      { cls: "type-code-02", label: "Code 02", meta: "12px · Regular · Mono", sample: "--font-sans: 'Inter', system-ui, sans-serif" },
+    ],
+  },
+  {
+    group: "Data",
+    family: "Inter",
+    note: "Numeric table cells and secondary KPI values — tabular-nums enforced",
+    presets: [
+      { cls: "type-data-01", label: "Data 01", meta: "14px · Medium · Sans · tabular-nums",  sample: "$1,234,567.89" },
+      { cls: "type-data-02", label: "Data 02", meta: "12px · Regular · Sans · tabular-nums", sample: "$1,234,567.89" },
+    ],
+  },
+  {
+    group: "KPI",
+    family: "Inter",
+    note: "Large numeric displays for primary metrics",
+    presets: [
+      { cls: "type-kpi", label: "KPI", meta: "32px · Semibold · Sans · tabular-nums · tracking-tight", sample: "$2.4B" },
+    ],
+  },
+] as const;
+
+function TypographyTab() {
+  return (
+    <div className="flex flex-col gap-[var(--spacing-10)]">
+      {TYPE_RAMP.map((group) => (
+        <div key={group.group}>
+          {/* Group header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: "var(--spacing-04)",
+              marginBottom: "var(--spacing-02)",
+              paddingBottom: "var(--spacing-03)",
+              borderBottom: "1px solid var(--border-subtle)",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "var(--text-sm)",
+                fontWeight: "var(--weight-semibold)",
+                color: "var(--text-primary)",
+              }}
+            >
+              {group.group}
+            </span>
+            <span
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--text-tertiary)",
+                fontFamily: "var(--font-mono)",
+              }}
+            >
+              {group.family}
+            </span>
+            <span
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--text-tertiary)",
+                marginLeft: "auto",
+              }}
+            >
+              {group.note}
+            </span>
+          </div>
+
+          {/* Preset rows */}
+          <div className="flex flex-col">
+            {group.presets.map((preset) => (
+              <div
+                key={preset.cls}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "var(--spacing-06)",
+                  padding: "var(--spacing-05) 0",
+                  borderBottom: "1px solid var(--border-subtle)",
+                }}
+              >
+                {/* Sample text — rendered in actual style */}
+                <span className={preset.cls} style={{ flex: 1, minWidth: 0 }}>
+                  {preset.sample}
+                </span>
+
+                {/* Right: token name + meta spec */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    gap: "var(--spacing-01)",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "var(--text-xs)",
+                      color: "var(--text-brand)",
+                      backgroundColor: "var(--bg-layer-02)",
+                      padding: "1px var(--spacing-02)",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                  >
+                    .{preset.cls}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "var(--text-tertiary)",
+                      textAlign: "right",
+                    }}
+                  >
+                    {preset.meta}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function PrimitivesTab() {
   return (
@@ -1827,6 +2014,7 @@ const [activeTab, setActiveTab] = useState<Tab>("Primitives");
       </div>
 
       {activeTab === "Primitives" && <PrimitivesTab />}
+      {activeTab === "Typography" && <TypographyTab />}
       {activeTab === "Data Display" && <DataDisplayTab />}
       {activeTab === "Tables" && <TablesTab />}
       {activeTab === "Forms & Controls" && <FormsTab />}

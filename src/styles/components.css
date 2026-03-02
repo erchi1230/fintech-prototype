@@ -1214,17 +1214,62 @@
   .mb-tooltip::after {
     content: attr(data-tooltip);
     bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: var(--spacing-02) var(--spacing-03);
+    left: 0;
+    transform: none;
+    padding: var(--spacing-03) var(--spacing-04);
     background-color: var(--tooltip-bg);
     color: var(--tooltip-text);
     font-size: var(--text-xs);
     font-weight: var(--weight-medium);
-    line-height: var(--leading-normal);
+    line-height: var(--leading-relaxed);
     border-radius: var(--tooltip-radius);
-    white-space: nowrap;
+    white-space: normal;
+    max-width: 28rem;
+    text-align: left;
     box-shadow: var(--tooltip-shadow);
+  }
+
+  /* New tooltip structure for React helpers:
+     <span class="mb-tooltip-root" data-open="true|false">
+       <span class="mb-tooltip-trigger">...</span>
+       <span class="mb-tooltip-panel">Tooltip text</span>
+     </span>
+  */
+  .mb-tooltip-root {
+    position: relative;
+    display: inline-flex;
+  }
+  .mb-tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+  }
+  .mb-tooltip-panel {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    padding: var(--spacing-03) var(--spacing-04);
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-relaxed);
+    border-radius: var(--tooltip-radius);
+    white-space: normal;
+    max-width: 28rem;
+    text-align: left;
+    box-shadow: var(--tooltip-shadow);
+    transform-origin: bottom left;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(2px);
+    transition:
+      opacity var(--duration-fast) var(--ease-default),
+      transform var(--duration-fast) var(--ease-default);
+  }
+  .mb-tooltip-root[data-open="true"] .mb-tooltip-panel {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
   /* Arrow */
   .mb-tooltip::before {
@@ -1248,7 +1293,7 @@
 
   .mb-dropdown {
     position: absolute;
-    top: calc(100% + var(--spacing-02));
+    top: calc(100% + var(--spacing-01));
     left: 0;
     z-index: 50;
     min-width: 12rem;
@@ -1297,5 +1342,6 @@
     color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
+    text-align: left;
   }
 }

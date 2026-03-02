@@ -96,6 +96,13 @@
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-normal);
   }
+  .type-heading-06 {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);      /* 16px */
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-normal);
+  }
 
   /* Body — content text */
   .type-body-01 {

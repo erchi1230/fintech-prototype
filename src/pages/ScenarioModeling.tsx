@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useState, useCallback, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Settings, Share2, MessageSquare, ChevronDown, Info } from "lucide-react";
+import { ArrowLeft, Settings, MessageSquare, ChevronDown, Info, Users } from "lucide-react";
 
 /*
  * ScenarioModeling.tsx
@@ -23,34 +23,32 @@ const GRID_COLS = `${LABEL_COL} 1fr 1fr 1fr`;
 const SCENARIOS = [
   {
     key: "base", label: "Base Case",
-    irr: "18.2%",  irrDelta: null,       irrUp: null,
-    moic: "2.0x",  moicDelta: null,      moicUp: null,
-    lpDist: "$1.85B", lpDistDelta: null,    lpDistUp: null,
-    gpDist: "$80M",   gpDistDelta: null,    gpDistUp: null,
-    mgmtFee: "$75M",  mgmtFeeDelta: null,   mgmtFeeUp: null,
+    irr: "18.2%",  irrDelta: null,         irrUp: null,
+    moic: "2.0x",  moicDelta: null,        moicUp: null,
+    lpDist: "$1.85B", lpDistDelta: null,      lpDistUp: null,
+    gpDist: "$80M",   gpDistDelta: null,      gpDistUp: null,
+    mgmtFee: "$75M",  mgmtFeeDelta: null,     mgmtFeeUp: null as null | boolean | "neutral",
   },
   {
     key: "up",   label: "Upside",
-    irr: "27.6%",  irrDelta: "+9.4pp",   irrUp: true,
-    moic: "2.5x",  moicDelta: "+0.5x",   moicUp: true,
+    irr: "27.6%",  irrDelta: "+9.4pp",     irrUp: true,
+    moic: "2.5x",  moicDelta: "+0.5x",     moicUp: true,
     lpDist: "$2.28B", lpDistDelta: "+$0.43B", lpDistUp: true,
     gpDist: "$160M",  gpDistDelta: "+$80M",   gpDistUp: true,
-    mgmtFee: "$60M",  mgmtFeeDelta: "−$15M",  mgmtFeeUp: false,
+    mgmtFee: "$60M",  mgmtFeeDelta: "−$15M",  mgmtFeeUp: "neutral" as const,
   },
   {
     key: "down", label: "Downside",
-    irr: "11.4%",  irrDelta: "−6.8pp",   irrUp: false,
-    moic: "1.5x",  moicDelta: "−0.5x",   moicUp: false,
+    irr: "11.4%",  irrDelta: "−6.8pp",     irrUp: false,
+    moic: "1.5x",  moicDelta: "−0.5x",     moicUp: false,
     lpDist: "$1.40B", lpDistDelta: "−$0.45B", lpDistUp: false,
-    gpDist: "$60M",   gpDistDelta: "−$20M",   gpDistUp: false,
-    mgmtFee: "$105M", mgmtFeeDelta: "+$30M",  mgmtFeeUp: true,
+    gpDist: "$0",     gpDistDelta: "−$80M",   gpDistUp: false,
+    mgmtFee: "$105M", mgmtFeeDelta: "+$30M",  mgmtFeeUp: "neutral" as const,
   },
 ];
 
 const CONFIDENCE_LABEL = "Last calculated: Jun 30, 2025 at 9:42am";
-const SECTION_LABEL     = "Fund Performance Across Scenarios";
-const FUND_CONTEXT      = "Total Capital Invested: $1,000,000,000";
-
+const SECTION_LABEL     = "Performance By Scenarios";
 /* ── Zone 2 data ──────────────────────────────────────────────────── */
 type SensRow = { key: string; irr: string; delta: string | null };
 
@@ -170,17 +168,62 @@ const GP_METRICS: MetricDef[] = [
    ======================================================================== */
 
 
-function VerticalRule() {
+
+/* ========================================================================
+   SHARED PRIMITIVES (incl. tooltip)
+   ======================================================================== */
+
+type MbTooltipContextValue = {
+  open: boolean;
+  setOpen: (next: boolean) => void;
+};
+
+const MbTooltipContext = createContext<MbTooltipContextValue | null>(null);
+
+function useMbTooltipContext() {
+  const ctx = useContext(MbTooltipContext);
+  if (!ctx) {
+    throw new Error("MbTooltip components must be used within <MbTooltip>");
+  }
+  return ctx;
+}
+
+function MbTooltip({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div
-      style={{
-        width: 1,
-        alignSelf: "stretch",
-        backgroundColor: "var(--border-subtle)",
-        marginLeft: "var(--spacing-05)",
-        marginRight: "var(--spacing-05)",
-      }}
-    />
+    <MbTooltipContext.Provider value={{ open, setOpen }}>
+      <span className="mb-tooltip-root" data-open={open ? "true" : "false"}>
+        {children}
+      </span>
+    </MbTooltipContext.Provider>
+  );
+}
+
+function MbTooltipTrigger({ children }: { children: React.ReactNode }) {
+  const { setOpen } = useMbTooltipContext();
+  return (
+    <span
+      className="mb-tooltip-trigger"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+    >
+      {children}
+    </span>
+  );
+}
+
+function MbTooltipContent({ children }: { children: React.ReactNode }) {
+  const { open } = useMbTooltipContext();
+  return (
+    <span
+      className="mb-tooltip-panel"
+      role="tooltip"
+      aria-hidden={open ? "false" : "true"}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -190,24 +233,103 @@ function VerticalRule() {
 
 type ScenarioRow = typeof SCENARIOS[number];
 
-function deltaBadgeStyle(isUp: boolean | null): React.CSSProperties {
-  if (isUp === true)  return { backgroundColor: "var(--bg-brand-light)",    color: "var(--interactive)" };
-  if (isUp === false) return { backgroundColor: "var(--support-error-light)", color: "var(--support-error-dark)" };
+function deltaBadgeStyle(isUp: boolean | null | "neutral"): React.CSSProperties {
+  if (isUp === true)      return { backgroundColor: "var(--bg-brand-light)",     color: "var(--interactive)" };
+  if (isUp === false)     return { backgroundColor: "var(--support-error-light)", color: "var(--support-error-dark)" };
+  if (isUp === "neutral") return { backgroundColor: "var(--bg-layer-02)",         color: "var(--text-secondary)" };
   return {};
 }
 
+type MetricKey = "irr" | "moic" | "lpDist" | "gpDist" | "mgmtFee";
+
+type MetricConfig = {
+  key: MetricKey;
+  label: string;
+  tooltip?: string;
+  tooltipWidth?: "wide";
+  values: (s: ScenarioRow) => string;
+  delta: (s: ScenarioRow) => string | null;
+  isUp: (s: ScenarioRow) => boolean | null | "neutral";
+};
+
+const METRIC_OPTIONS: MetricConfig[] = [
+  {
+    key: "irr",
+    label: "Net IRR",
+    values: (s) => s.irr,
+    delta: (s) => s.irrDelta,
+    isUp: (s) => s.irrUp,
+  },
+  {
+    key: "moic",
+    label: "Gross MOIC to LP",
+    values: (s) => s.moic,
+    delta: (s) => s.moicDelta,
+    isUp: (s) => s.moicUp,
+  },
+  {
+    key: "lpDist",
+    label: "Total LP Distributions",
+    values: (s) => s.lpDist,
+    delta: (s) => s.lpDistDelta,
+    isUp: (s) => s.lpDistUp,
+  },
+  {
+    key: "gpDist",
+    label: "Total GP Distributions",
+    tooltip: "Carried Interest Rate is 20%",
+    values: (s) => s.gpDist,
+    delta: (s) => s.gpDistDelta,
+    isUp: (s) => s.gpDistUp,
+  },
+  {
+    key: "mgmtFee",
+    label: "Total Management Fee",
+    tooltip: "1.5% on total capital invested, charged quarterly",
+    tooltipWidth: "wide",
+    values: (s) => s.mgmtFee,
+    delta: (s) => s.mgmtFeeDelta,
+    isUp: (s) => s.mgmtFeeUp,
+  },
+];
+
+const PRIMARY_METRIC_LABELS: Record<MetricKey, string> = {
+  irr: "Net IRR",
+  moic: "Gross MOIC",
+  lpDist: "LP Dist.",
+  gpDist: "GP Dist.",
+  mgmtFee: "Mgmt. Fee",
+};
+
 function ComparisonPanel() {
-  const dataRows: {
-    label: string;
-    values: (s: ScenarioRow) => string;
-    delta: (s: ScenarioRow) => string | null;
-    isUp:  (s: ScenarioRow) => boolean | null;
-  }[] = [
-    { label: "Gross MOIC to LP",       values: (s) => s.moic,    delta: (s) => s.moicDelta,    isUp: (s) => s.moicUp    },
-    { label: "Total LP Distributions", values: (s) => s.lpDist,  delta: (s) => s.lpDistDelta,  isUp: (s) => s.lpDistUp  },
-    { label: "Total GP Distributions", values: (s) => s.gpDist,  delta: (s) => s.gpDistDelta,  isUp: (s) => s.gpDistUp  },
-    { label: "Total Management Fee",   values: (s) => s.mgmtFee, delta: (s) => s.mgmtFeeDelta, isUp: (s) => s.mgmtFeeUp },
-  ];
+  const [selectedMetricKey, setSelectedMetricKey] = useState<MetricKey>("irr");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const selectedMetric = METRIC_OPTIONS.find((m) => m.key === selectedMetricKey)!;
+
+  const dataRows = METRIC_OPTIONS.filter((m) => m.key !== selectedMetricKey);
+
+  // #region agent log
+  fetch('http://127.0.0.1:7942/ingest/61cf5694-de5f-4e03-9d6a-04e56dd22888', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Debug-Session-Id': '565fd3',
+    },
+    body: JSON.stringify({
+      sessionId: '565fd3',
+      runId: 'tooltip-width-debug',
+      hypothesisId: 'H1',
+      location: 'ScenarioModeling.tsx:ComparisonPanel',
+      message: 'ComparisonPanel tooltip rows rendered',
+      data: {
+        tooltipLabels: dataRows.filter(r => r.tooltip).map(r => r.label),
+        tooltips: dataRows.filter(r => r.tooltip).map(r => r.tooltip),
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion agent log
 
   return (
     <div
@@ -216,34 +338,60 @@ function ComparisonPanel() {
         gridTemplateColumns: GRID_COLS,
         paddingLeft: H_PAD,
         paddingRight: H_PAD,
-        paddingTop: "var(--spacing-04)",
-        paddingBottom: "var(--spacing-04)",
+        paddingTop: 0,
+        paddingBottom: 0,
       }}
     >
-      {/* Scenario column headers */}
-      <div style={{ paddingBottom: "var(--spacing-03)", paddingTop: "var(--spacing-03)" }} />
-      {SCENARIOS.map((s) => (
+      {/* Section header band — column labels for metrics and scenarios */}
+      <div
+        style={{
+          gridColumn: "1 / -1",
+          marginLeft: `calc(-1 * ${H_PAD})`,
+          marginRight: `calc(-1 * ${H_PAD})`,
+          paddingLeft: H_PAD,
+          paddingRight: H_PAD,
+          paddingTop: 0,
+          paddingBottom: 0,
+          backgroundColor: "var(--bg-layer-02)",
+          borderTop: "1px solid var(--border-subtle)",
+          borderBottom: "1px solid var(--border-subtle)",
+          display: "grid",
+          gridTemplateColumns: GRID_COLS,
+        }}
+      >
         <div
-          key={s.key}
           className="type-label-02"
           style={{
-            color: "var(--text-primary)",
-            textTransform: "uppercase",
-            paddingBottom: "var(--spacing-03)",
-            paddingTop: "var(--spacing-03)",
-            paddingLeft: "var(--spacing-05)",
-            borderLeft: "1px solid var(--border-subtle)",
+            color: "var(--text-secondary)",
+            textAlign: "right",
+            paddingTop: "var(--spacing-02)",
+            paddingBottom: "var(--spacing-02)",
+            paddingRight: "var(--spacing-05)",
           }}
         >
-          {s.label}
+          Metrics
         </div>
-      ))}
+        {SCENARIOS.map((s) => (
+          <div
+            key={s.key}
+            className="type-label-02"
+            style={{
+              color: "var(--text-secondary)",
+              textTransform: "uppercase",
+              paddingTop: "var(--spacing-02)",
+              paddingBottom: "var(--spacing-02)",
+              paddingLeft: "var(--spacing-05)",
+              borderLeft: "1px solid var(--border-subtle)",
+            }}
+          >
+            {s.label}
+          </div>
+        ))}
+      </div>
 
-      {/* Net IRR — headline metric, type-kpi */}
+      {/* Primary metric — headline metric with ghost dropdown trigger */}
       <div
-        className="type-kpi"
         style={{
-          color: "var(--text-secondary)",
           textAlign: "right",
           paddingRight: "var(--spacing-05)",
           paddingTop: "var(--spacing-05)",
@@ -251,9 +399,52 @@ function ComparisonPanel() {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
+          position: "relative",
         }}
       >
-        Net IRR
+        <button
+          type="button"
+          className="type-heading-06"
+          onClick={() => setMenuOpen((open) => !open)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "var(--spacing-02)",
+            padding: "var(--spacing-02) var(--spacing-03)",
+            borderRadius: "var(--radius-md)",
+            border: "none",
+            background: menuOpen ? "var(--bg-hover)" : "transparent",
+            color: "var(--text-secondary)",
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {PRIMARY_METRIC_LABELS[selectedMetricKey]}
+          <ChevronDown size={16} />
+        </button>
+        {menuOpen && (
+          <div className="mb-dropdown" style={{ minWidth: "14rem" }}>
+            <div className="mb-dropdown__label">Primary metric</div>
+            {METRIC_OPTIONS.map((metric) => (
+              <button
+                key={metric.key}
+                type="button"
+                className="mb-dropdown__item"
+                onClick={() => {
+                  setSelectedMetricKey(metric.key);
+                  setMenuOpen(false);
+                }}
+                style={
+                  metric.key === selectedMetricKey
+                    ? { backgroundColor: "var(--bg-selected)" }
+                    : undefined
+                }
+              >
+                <span style={{ flex: 1 }}>{metric.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {SCENARIOS.map((s) => (
         <div
@@ -270,10 +461,16 @@ function ComparisonPanel() {
             gap: "var(--spacing-03)",
           }}
         >
-          {s.irr}
-          {s.irrDelta && (
-            <span className="mb-badge type-caption-01" style={{ ...deltaBadgeStyle(s.irrUp), fontVariantNumeric: "tabular-nums" }}>
-              {s.irrDelta}
+          {selectedMetric.values(s)}
+          {selectedMetric.delta(s) && (
+            <span
+              className="mb-badge type-caption-01"
+              style={{
+                ...deltaBadgeStyle(selectedMetric.isUp(s)),
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {selectedMetric.delta(s)}
             </span>
           )}
         </div>
@@ -294,8 +491,26 @@ function ComparisonPanel() {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end",
+              gap: "var(--spacing-02)",
             }}
           >
+            {row.tooltip && (
+              <MbTooltip>
+                <MbTooltipTrigger>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      color: "var(--text-tertiary)",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Info size={12} />
+                  </span>
+                </MbTooltipTrigger>
+                <MbTooltipContent>{row.tooltip}</MbTooltipContent>
+              </MbTooltip>
+            )}
             {row.label}
           </div>
           {SCENARIOS.map((s) => (
@@ -332,28 +547,12 @@ function ComparisonPanel() {
 /* ========================================================================
    ZONE 1 — Fixed comparison panel
    ======================================================================== */
-function Zone1({ onHeightChange }: { onHeightChange: (h: number) => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => onHeightChange(el.offsetHeight));
-    ro.observe(el);
-    onHeightChange(el.offsetHeight);
-    return () => ro.disconnect();
-  }, [onHeightChange]);
-
+function Zone1() {
   return (
     <div
-      ref={ref}
       style={{
-        position: "fixed",
-        top: "var(--topbar-height)",
-        left: 0,
-        right: 0,
-        zIndex: 30,
         backgroundColor: "var(--bg-layer-01)",
+        borderTop: "1px solid var(--border-subtle)",
         borderBottom: "1px solid var(--border-subtle)",
       }}
     >
@@ -368,12 +567,10 @@ function Zone1({ onHeightChange }: { onHeightChange: (h: number) => void }) {
           paddingBottom: "var(--spacing-05)",
         }}
       >
-        <span className="type-label-02" style={{ color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        <span className="type-heading-06" style={{ color: "var(--text-primary)" }}>
           {SECTION_LABEL}
         </span>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span className="type-caption-01" style={{ color: "var(--text-secondary)" }}>{FUND_CONTEXT}</span>
-          <VerticalRule />
           <span className="type-caption-01" style={{ color: "var(--text-secondary)" }}>{CONFIDENCE_LABEL}</span>
         </div>
       </div>
@@ -539,10 +736,11 @@ function Zone2() {
           paddingRight: H_PAD,
           paddingTop: "var(--spacing-05)",
           paddingBottom: "var(--spacing-05)",
+          borderTop: "1px solid var(--border-subtle)",
           borderBottom: "1px solid var(--border-subtle)",
         }}
       >
-        <span className="type-label-02" style={{ color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        <span className="type-heading-06" style={{ color: "var(--text-primary)" }}>
           Scenario Assumptions &amp; Sensitivity
         </span>
       </div>
@@ -980,10 +1178,11 @@ function Zone3() {
           paddingRight: H_PAD,
           paddingTop: "var(--spacing-05)",
           paddingBottom: "var(--spacing-05)",
+          borderTop: "1px solid var(--border-subtle)",
           borderBottom: "1px solid var(--border-subtle)",
         }}
       >
-        <span className="type-label-02" style={{ color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        <span className="type-heading-06" style={{ color: "var(--text-primary)" }}>
           Fund Performance — Full Breakdown
         </span>
       </div>
@@ -1104,7 +1303,7 @@ function GlobalNav({ title }: { title: string }) {
           <MessageSquare size={16} />
         </button>
         <button className="mb-btn mb-btn--outline" title="Share" style={{ gap: "var(--spacing-02)" }}>
-          <Share2 size={16} />
+          <Users size={16} />
           Share
         </button>
       </div>
@@ -1116,18 +1315,12 @@ function GlobalNav({ title }: { title: string }) {
    MAIN PAGE COMPONENT
    ======================================================================== */
 export default function ScenarioModeling() {
-  const [zone1Height, setZone1Height] = useState(0);
-  const handleZone1Height = useCallback((h: number) => setZone1Height(h), []);
-
   return (
     <div style={{ backgroundColor: "var(--bg)", minHeight: "100vh" }}>
       <GlobalNav title="Fund Scenario Modeling" />
-      <Zone1 onHeightChange={handleZone1Height} />
-
-      <div style={{ paddingTop: zone1Height }}>
-        <Zone2 />
-        <Zone3 />
-      </div>
+      <Zone1 />
+      <Zone2 />
+      <Zone3 />
     </div>
   );
 }

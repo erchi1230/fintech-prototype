@@ -479,6 +479,7 @@ function ComparisonPanel() {
               gap: "var(--spacing-02)",
             }}
           >
+            {row.label}
             {row.tooltip && (
               <MbTooltip>
                 <MbTooltipTrigger>
@@ -496,7 +497,6 @@ function ComparisonPanel() {
                 <MbTooltipContent>{row.tooltip}</MbTooltipContent>
               </MbTooltip>
             )}
-            {row.label}
           </div>
           {SCENARIOS.map((s) => (
             <div
@@ -809,6 +809,7 @@ function SensitivityTable({
               gap: "var(--spacing-02)",
             }}
           >
+            {row.name}
             {row.infoTooltip && (
               <span
                 title={row.infoTooltip}
@@ -822,7 +823,6 @@ function SensitivityTable({
                 <Info size={12} />
               </span>
             )}
-            {row.name}
           </div>
           {columns.map((_, colIdx) => (
             <div
